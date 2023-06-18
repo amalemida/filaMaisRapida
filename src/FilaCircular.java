@@ -2,54 +2,50 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class FilaCircular<X> implements Cloneable {
-    private int capacidade;
-    private int fim;
-    private int inicio;
-    private int qtde;
     private Object[] elemento;
+    private int capacidade;
+    private int primeiro;
+    private int ultimo;
+    private int total;
 
     public FilaCircular() throws Exception {
         this(10);
     }
 
     public FilaCircular(int capacidade) throws Exception {
-        if (capacidade <= 0)
+        if (capacidade <= 0){
             throw new Exception("Capacidade inválida");
-
+        }
+        
         this.capacidade = capacidade;
-        this.qtde = 0;
-        this.inicio = 0;
-        this.fim = 0;
+        this.primeiro = 0;
+        this.ultimo = 0;
+        this.total = 0;
         this.elemento = (Object[]) new Object[capacidade];
     }
 
-    public int qtde() {
-        return this.qtde;
-    }
-
     public boolean estaVazia() {
-
-        return this.qtde == 0;
+        return this.total == 0;
     }
 
     public boolean estaCheia() {
-        return this.qtde == this.capacidade;
+        return this.total == this.capacidade;
     }
 
     public void guardeUmItem(X x) throws Exception {
         if (x == null)
             throw new Exception("Não tem o que guardar");
 
-        if (this.fim + 1 == this.elemento.length) // cheia
+        if (this.ultimo+1 == this.elemento.length)
             this.redimensioneSe(2.0F);
-        this.fim++;
+        this.ultimo++;
 
         if(x instanceof Cloneable)
-            this.elemento[this.fim] = meuCloneDeX(x);
+            this.elemento[this.ultimo] = meuCloneDeX(x);
         else 
-            this.elemento[this.fim] = x;
-        this.fim = (this.fim + 1) % this.capacidade;
-        this.qtde++;
+            this.elemento[this.ultimo] = x;
+        this.ultimo = (this.ultimo + 1) % this.capacidade;
+        this.total++;
     
     }
 
@@ -57,9 +53,9 @@ public class FilaCircular<X> implements Cloneable {
         if (estaVazia()) {
             throw new RuntimeException("Nada a remover");
         }
-        X ret = (X) this.elemento[this.inicio];
-        this.inicio = (this.inicio + 1) % this.capacidade;
-        this.qtde--;
+        X ret = (X) this.elemento[this.primeiro];
+        this.primeiro = (this.primeiro + 1) % this.capacidade;
+        this.total--;
         return ret;
     }
 
@@ -67,27 +63,27 @@ public class FilaCircular<X> implements Cloneable {
         if (estaVazia()) {
             throw new RuntimeException("Nada a recuperar");
         }
-        return (X) this.elemento[this.inicio];
+        return (X) this.elemento[this.primeiro];
     }
 
     public void redimensioneSe(float fator) {
-        if (fator < this.qtde) {
+        if (fator < this.total) {
             throw new RuntimeException("Nova capacidade menor que a quantidade atual");
         }
         Object[] novo = new Object[Math.round(this.elemento.length * fator)];
-        for (int i = 0; i < this.qtde; i++) {
-            novo[i] = this.elemento[(this.inicio + i) % this.capacidade];
+        for (int i = 0; i < this.total; i++) {
+            novo[i] = this.elemento[(this.primeiro + i) % this.capacidade];
         }
-        this.inicio = 0;
-        this.fim = this.qtde;
+        this.primeiro = 0;
+        this.ultimo = this.total;
         this.capacidade = (int) fator;
         this.elemento = novo;
     }
 
     public String toString() {
         String saida = "";
-        for (int i = 0; i < this.qtde; i++) {
-            int indice = (this.inicio + i) % this.capacidade;
+        for (int i = 0; i < this.total; i++) {
+            int indice = (this.primeiro + i) % this.capacidade;
             saida += this.elemento[indice] + " ";
         }
         return saida;
@@ -101,11 +97,11 @@ public class FilaCircular<X> implements Cloneable {
             return false;
         }
         FilaCircular<X> outra = (FilaCircular<X>) obj;
-        if (outra.qtde != this.qtde) {
+        if (outra.total != this.total) {
             return false;
         }
-        for (int i = 0; i < this.qtde; i++) {
-            int indice = (this.inicio + i) % this.capacidade;
+        for (int i = 0; i < this.total; i++) {
+            int indice = (this.primeiro + i) % this.capacidade;
             if (!this.elemento[indice].equals(outra.elemento[indice])) {
                 return false;
             }
@@ -115,8 +111,8 @@ public class FilaCircular<X> implements Cloneable {
 
     public int hashCode() {
         int hashCode = 666;
-        for (int i = 0; i < this.qtde; i++) {
-            int indice = (this.inicio + i) % this.capacidade;
+        for (int i = 0; i < this.total; i++) {
+            int indice = (this.primeiro + i) % this.capacidade;
             hashCode += this.elemento[indice].hashCode();
         }
         return hashCode;

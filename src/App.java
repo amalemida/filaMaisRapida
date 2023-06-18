@@ -4,18 +4,20 @@ public class App {
         System.out.println("Enfileirando.");
         FilaCircular<Integer> fila;
         try {
-            fila = new FilaCircular<Integer>(5);
+            fila = new FilaCircular<Integer>(1000000);
 
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 1000000; i++) {
                 fila.guardeUmItem(i);
+              //  System.out.println("Elemento guardado "+ i);
             }
            fila.estadoDaFila();
 
             System.out.println("Desenfileirando...");
             c.iniciar();
-            for (int i = 1; i <= 5; i++) {
-                // System.out.print(fila.recupereUmItem());
-                fila.removaUmItem();
+            
+            for (int i = 1; i <= 1000000; i++) {
+                 fila.removaUmItem();
+              //  System.out.println("Elemento removido "+i );
             }
             fila.estadoDaFila();
        
@@ -24,8 +26,9 @@ public class App {
 
             if (fila.estaVazia()) {
                 System.out.println("\nEnfileirando novamente.");
-                for (int i = 1; i <= 5; i++) {
+                for (int i = 1; i <= 1000000; i++) {
                     fila.guardeUmItem(i);
+                  //  System.out.println("Elemento guardado novamante " + i);
                 }
             }
             fila.estadoDaFila();
